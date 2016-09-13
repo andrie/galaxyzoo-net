@@ -34,8 +34,12 @@ read_zoo_image_name <- function(file){
 
 
 plot.galaxyzoo <- function(x, interpolate = FALSE, ...){
-  plot(0:1, 0:1, type = "n", xaxt = "n", yaxt = "n")
+  zeroes <- rep(0, 4)
+  oldpar <- par(mar = zeroes, mai = zeroes)
+  on.exit(par(oldpar))
+  plot(0:1, 0:1, type = "n", xaxt = "n", yaxt = "n", bty = "n")
   rasterImage(x, xleft = 0, ybottom = 0, xright = 1, ytop = 1, interpolate = interpolate)
+  
 }
 
 trim_zoo <- function(x, r = 0.1){
