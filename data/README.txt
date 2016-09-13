@@ -1,0 +1,1 @@
+The data folder contains the jpg images as well as the class data

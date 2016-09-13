@@ -1,9 +1,18 @@
+# xdf files
+*.xdf
+
+# raw data
+*.csv
+*.jpg
+
+
 # History files
 .Rhistory
 .Rapp.history
 
 # Session Data files
 .RData
+*.rds
 
 # Example code in package build process
 *-Ex.R
@@ -16,6 +25,7 @@
 
 # RStudio files
 .Rproj.user/
+*.Rproj
 
 # produced vignettes
 vignettes/*.html
