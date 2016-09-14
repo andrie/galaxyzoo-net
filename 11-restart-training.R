@@ -2,15 +2,10 @@
 library(MicrosoftRML)
 # library(mxNeuralNetExtra)
 
-tf <- "reconstructed_net.nn"
 prevModel <- readRDS("scored_model_2016-09-13.rds")
-# str(prevModel)
 
+tf <- "reconstructed_net.nn"
 z <- reconstructNetDefinition(prevModel, filename = tf)
-zz <- readNetDefinition(tf)
-zz[1]
-scan(text = zz, what = "character", sep = "\n")[3]
-# nchar(z)
 
 frm <- prevModel$Formula
 
@@ -32,14 +27,9 @@ system.time({
                        # acceleration = "sse",
                        acceleration = "gpu",
                        miniBatchSize = 64,
-                       numIterations = 5,
+                       numIterations = 100,
                        normalize = "No",
                        initWtsDiameter = 0.1
   )
 })
 
-
-# Loading net from: 
-#   (3,20)-(3,21): error: Expected: '<Ident>', Found: ']'
-# (5,20)-(5,21): error: Expected: '<Ident>', Found: ']'
-# Error: *** Exception: 'Parsing errors'
