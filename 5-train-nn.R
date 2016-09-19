@@ -86,16 +86,17 @@ system.time({
   model <- mxNeuralNet(frm, data = galaxy_data,
                        netDefinition = netDefinition, 
                        type = "multiClass", 
-                       optimizer = maOptimizerSgd(
-                         learningRate = 0.05, 
-                         lRateRedRatio = 0.9, 
-                         lRateRedFreq = 5,
-                         momentum = 0.9
-                         ),
+                       # optimizer = maOptimizerSgd(
+                       #   learningRate = 0.05, 
+                       #   lRateRedRatio = 0.9, 
+                       #   lRateRedFreq = 5,
+                       #   momentum = 0.9
+                       #   ),
+                       optimizer = maOptimizerAda(decay = 0.97),
                        # acceleration = "sse",
                        acceleration = "gpu",
-                       miniBatchSize = 64,
-                       numIterations = 100,
+                       miniBatchSize = 32,
+                       numIterations = 50,
                        normalize = "No",
                    initWtsDiameter = 0.1
   )
@@ -108,7 +109,8 @@ system.time({
 # model
 # summary(model)
 
-saveRDS(model, file = "scored_model_2016-09-12.rds")
+mxSaveModel(model, "scored_model_2016-09-18.rds")
+# saveRDS(model, file = "scored_model_2016-09-19.rds")
 
 x <- mxPredict(model, galaxy_data)
 table(x$PredictedLabel)

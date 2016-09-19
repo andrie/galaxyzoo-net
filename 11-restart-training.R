@@ -1,15 +1,15 @@
 # devtools::install_github("andrie/mxNeuralNetExtra")
 library(MicrosoftRML)
-# library(mxNeuralNetExtra)
+library(mxNeuralNetExtra)
 
-prevModel <- readRDS("scored_model_2016-09-13.rds")
+prevModel <- readRDS("scored_model_2016-09-19.rds")
 
 tf <- "reconstructed_net.nn"
 z <- reconstructNetDefinition(prevModel, filename = tf)
 
 frm <- prevModel$Formula
 
-galaxy_data <- rxReadXdf("images_test.xdf")
+galaxy_data <- rxReadXdf("images_train.xdf")
 
 
 rxSetComputeContext(RxLocalParallel())
@@ -18,18 +18,20 @@ system.time({
   model <- mxNeuralNet(frm, galaxy_data,
                        netDefinition = readNetDefinition(tf), 
                        type = "multiClass", 
-                       optimizer = maOptimizerSgd(
-                         learningRate = 0.05, 
-                         lRateRedRatio = 0.9, 
-                         lRateRedFreq = 5,
-                         momentum = 0.9
-                       ),
+                       optimizer = maOptimizerAda(decay = 0.99),
                        # acceleration = "sse",
                        acceleration = "gpu",
-                       miniBatchSize = 64,
-                       numIterations = 100,
-                       normalize = "No",
+                       miniBatchSize = 16,
+                       numIterations = 50,
+                       normalize = "auto",
                        initWtsDiameter = 0.1
   )
 })
 
+mxSaveModel(model, "scored_model_2016-09-19a.rds")
+
+x <- mxPredict(model, galaxy_data)
+table(x$PredictedLabel)
+rxSummary(~Class, galaxy_data)
+
+xtabs(~galaxy_data$Class +x$PredictedLabel)
