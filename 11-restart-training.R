@@ -1,15 +1,16 @@
-# devtools::install_github("andrie/mxNeuralNetExtra")
+# devtools::install_github("andrie/RMLtools")
 library(MicrosoftRML)
-library(mxNeuralNetExtra)
+library("RMLtools")
 
-prevModel <- readRDS("scored_model_2016-09-19.rds")
+prevModelName <- tail(list.files(pattern = "scored_model.*.rds"), 1)
+prevModel <- readRDS(prevModelName)
 
 tf <- "reconstructed_net.nn"
 z <- reconstructNetDefinition(prevModel, filename = tf)
 
 frm <- prevModel$Formula
 
-galaxy_data <- rxReadXdf("images_train.xdf")
+if(!exists("galaxydata")) galaxy_data <- rxReadXdf("images_train.xdf")
 
 
 rxSetComputeContext(RxLocalParallel())
@@ -21,17 +22,18 @@ system.time({
                        optimizer = maOptimizerAda(decay = 0.99),
                        # acceleration = "sse",
                        acceleration = "gpu",
-                       miniBatchSize = 16,
+                       miniBatchSize = 32,
                        numIterations = 50,
                        normalize = "auto",
                        initWtsDiameter = 0.1
   )
 })
 
-mxSaveModel(model, "scored_model_2016-09-19a.rds")
+mxSaveModel(model, sprintf("scored_model_%s.rds", strftime(Sys.time(), format = "%F-%Hh%M")))
 
-x <- mxPredict(model, galaxy_data)
-table(x$PredictedLabel)
-rxSummary(~Class, galaxy_data)
+summary_train <- mxPredict(model, galaxy_data, extraVarsToWrite = "Class")
+xtabs(~ Class + PredictedLabel, summary_train)
 
-xtabs(~galaxy_data$Class +x$PredictedLabel)
+if(!exists("galaxy_test")) galaxy_test <- rxReadXdf("images_test.xdf")
+summary_test <- mxPredict(model, galaxy_test, extraVarsToWrite = "Class")
+xtabs(~ Class + PredictedLabel, summary_test)
