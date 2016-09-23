@@ -2,7 +2,7 @@
 library(MicrosoftRML)
 library("RMLtools")
 
-prevModelName <- tail(list.files(pattern = "scored_model.*.rds"), 1)
+prevModelName <- tail(list.files(path = "models", pattern = "scored_model.*.rds", full.names = TRUE), 1)
 prevModel <- readRDS(prevModelName)
 
 tf <- "reconstructed_net.nn"
@@ -23,13 +23,13 @@ system.time({
                        # acceleration = "sse",
                        acceleration = "gpu",
                        miniBatchSize = 32,
-                       numIterations = 50,
+                       numIterations = 100,
                        normalize = "auto",
                        initWtsDiameter = 0.1
   )
 })
 
-mxSaveModel(model, sprintf("scored_model_%s.rds", strftime(Sys.time(), format = "%F-%Hh%M")))
+mxSaveModel(model, sprintf("models/scored_model_%s.rds", strftime(Sys.time(), format = "%F-%Hh%M")))
 
 summary_train <- mxPredict(model, galaxy_data, extraVarsToWrite = "Class")
 xtabs(~ Class + PredictedLabel, summary_train)
