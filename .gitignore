@@ -11,6 +11,7 @@
 .Rapp.history
 
 # Session Data files
+reconstructed_net.nn
 .RData
 models/*.rds
 models/*.rds_old
