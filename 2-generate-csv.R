@@ -3,7 +3,8 @@
 
 create_image_csv <- function(images,
                              output = "flattened_images_trial.csv",
-                             size = c(50, 50)
+                             size = c(50, 50),
+                             rotate_angle = 0
                              
 ){
   source("0-common-functions.R", local = TRUE)
@@ -21,11 +22,12 @@ create_image_csv <- function(images,
   zzz <- foreach(
       i = images, 
       .combine = c, 
-      .packages = c("jpeg", "magrittr", "imager"), 
+      .packages = c("magrittr", "imager"), 
       .inorder = TRUE
     ) %do% {
       z <- read_galaxy_image_name(i) %>% 
         crop_galaxy(0.26) %>% 
+        rotate_galaxy(rotate_angle) %>% 
         resize_galaxy(size) %>%  
         flatten_galaxy()
       zz <- data.frame(
@@ -45,10 +47,11 @@ create_image_csv <- function(images,
 # Parallel import ---------------------------------------------------------
 
 create_image_csv_par <- function(
-  nrows = 100, 
+  nrows = NA, 
   input = "data/images_training_rev1",
   output = "flattened_images_trial.csv",
   size = c(50, 50),
+  rotate_angle = 0,
   cores = 1
   
 ){
@@ -87,7 +90,8 @@ create_image_csv_par <- function(
           .export = "create_image_csv") %dopar% {
     create_image_csv(images = sl$images,
                      output = sl$filename,
-                     size = size
+                     size = size,
+                     rotate_angle = rotate_angle
                      )
   }
   sapply(split_list, "[[", "filename")
@@ -96,13 +100,32 @@ create_image_csv_par <- function(
 
 # Run job -----------------------------------------------------------------
 
+# create_image_csv_par(nrows = NA, 
+#                      input = "data/images_training_rev1",
+#                      output = "flattened_images_rotated.csv",
+#                      size = c(50, 50),
+#                      cores = 8)
+
+# create_image_csv_par(nrows = NA, 
+#                      input = "data/images_training_rev1",
+#                      output = "flattened_images.csv",
+#                      size = c(50, 50),
+#                      rotate_angle = 0,
+#                      cores = 8)
+
+
 create_image_csv_par(nrows = NA, 
                      input = "data/images_training_rev1",
-                     output = "flattened_images_trial.csv",
+                     output = "flattened_images_rotated.csv",
                      size = c(50, 50),
-                     cores = 8)
-
+                     rotate_angle = 90,
+                     cores = 6)
 
 #  ------------------------------------------------------------------------
 
-
+library(readr)
+gxy <- read_csv("flattened_images_rotated_1.csv")
+layout(t(1:2))
+read_csv("flattened_images_1.csv")[i, -1]         %>% unlist(use.names = FALSE) %>% as.cimg(dims = c(50, 50, 1, 3)) %>% plot_pretty()
+read_csv("flattened_images_rotated_1.csv")[i, -1] %>% unlist(use.names = FALSE) %>% as.cimg(dims = c(50, 50, 1, 3)) %>% plot_pretty()
+layout(1)

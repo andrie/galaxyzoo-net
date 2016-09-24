@@ -43,7 +43,7 @@ plot_galaxy_type <- function(type, dat, n = 12){
   oldpar <- par(mfrow = c(3, 4))
   on.exit(par(oldpar))
   for(ff in subs$GalaxyID){
-    read_galaxy(as.character(ff)) %>% plot()
+    read_galaxy(as.character(ff)) %>% plot_pretty()
   }
 }
 

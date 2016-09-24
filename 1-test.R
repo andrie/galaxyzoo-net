@@ -46,8 +46,20 @@ read_galaxy(121) %>% rotate_galaxy(45) %>% plot_pretty()
 read_galaxy(121) %>% plot_pretty()
 read_galaxy(121) %>% isoblur(2) %>% plot_pretty()
 read_galaxy(121) %>% isoblur(5) %>% plot_pretty()
-read_galaxy(121) %>% isoblur(10) %>% plot_pretty()
-1
+read_galaxy(121) %>% isoblur(7) %>% plot_pretty()
+
+
+#  ------------------------------------------------------------------------
+
+
+gxy <- read_galaxy("100263")
+layout(matrix(1:4, nrow = 2))
+library(foreach)
+foreach(i = seq(0, 6, by = 2)) %do% {
+  gxy %>% isoblur(i) %>% plot_pretty()
+  invisible(NULL)
+}
+layout(1)
 
 
 #  ------------------------------------------------------------------------

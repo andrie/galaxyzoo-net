@@ -1,7 +1,4 @@
-library(jpeg)
-# library(raster)
 library(magrittr)
-# library(fields)
 library(imager)
 
 galaxy_images <- function(id, image_dir = "data/images_training_rev1"){
@@ -34,9 +31,8 @@ plot_pretty <- function(x, interpolate = FALSE, ...){
   zeroes <- rep(0, 4)
   oldpar <- par(mar = zeroes, mai = zeroes)
   on.exit(par(oldpar))
-  plot(0:1, 0:1, type = "n", xaxt = "n", yaxt = "n", bty = "n")
-  plot(x, interpolate = interpolate)
-
+  # plot(0:1, 0:1, type = "n", xaxt = "n", yaxt = "n", bty = "n")
+  plot(x, interpolate = interpolate, xaxt = "n", yaxt = "n", bty = "n", xlab = "", ylab = "", asp = 1)
 }
 
 crop_galaxy <- function(x, fraction = 0.1){
