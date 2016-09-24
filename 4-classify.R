@@ -52,5 +52,5 @@ write_csv(dat[, c("GalaxyID", "Class")], path = "data/galaxy_class.csv")
 # dat %>% filter(Other > 0.9)
 # dat %>% arrange(desc(Ambiguous))
 # 
-# read_zoo("471090") %>% plot()
+# read_galaxy("471090") %>% plot()
 # 

@@ -2,33 +2,52 @@ source("0-common-functions.R")
 
 #  ------------------------------------------------------------------------
 
-read_zoo(1) %>%  dim()
-read_zoo(1) %>% plot()
-read_zoo(121) %>% plot()
-read_zoo("100263") %>% plot()
+read_galaxy(1) %>%  dim()
+read_galaxy(1) %>%  class()
+read_galaxy(1) %>% plot_pretty()
+read_galaxy(121) %>% plot_pretty()
+read_galaxy("100263") %>% plot_pretty()
 
-read_zoo_image_name("data/images_training_rev1/100263.jpg") %>% plot()
+read_galaxy_image_name("data/images_training_rev1/100263.jpg") %>% plot_pretty()
 
-read_zoo(2) %>% resample_zoo(c(20, 20)) %>% dim()
-read_zoo(2) %>% resample_zoo(c(20, 20)) %>% plot()
-read_zoo(2) %>% resample_zoo(c(20, 20)) %>% flatten_zoo()
-read_zoo(2) %>% resample_zoo(c(20, 20)) %>% flatten_zoo() %>% dim()
-read_zoo(5) %>% resample_zoo(c(50, 50)) %>% plot()
+read_galaxy("100263") %>% resize_galaxy(c(20, 20)) %>% dim()
+read_galaxy("100263") %>% resize_galaxy(c(20, 20)) %>% plot_pretty
+read_galaxy("100263") %>% resize_galaxy(c(20, 20)) %>% flatten_galaxy()
+read_galaxy("100263") %>% resize_galaxy(c(20, 20)) %>% flatten_galaxy() %>% dim()
+read_galaxy(5) %>% resize_galaxy(c(50, 50)) %>% plot_pretty()
 
-read_zoo(2) %>% resample_zoo(c(50, 50)) %>% plot()
-read_zoo(2) %>% trim_zoo(0.2) %>% resample_zoo(c(50, 50)) %>% plot()
-read_zoo(2) %>% trim_zoo(0.2) %>% resample_zoo(c(50, 50)) %>% flatten_zoo() 
-read_zoo(2) %>% trim_zoo(0.2) %>% resample_zoo(c(50, 50)) %>% flatten_zoo() %>% dim()
+read_galaxy("100263") %>% resize_galaxy(c(50, 50)) %>% plot_pretty()
+read_galaxy("100263") %>% crop_galaxy(0.2) %>% resize_galaxy(c(50, 50)) %>% plot_pretty()
+read_galaxy("100263") %>% crop_galaxy(0.2) %>% resize_galaxy(c(50, 50)) %>% flatten_galaxy() 
+read_galaxy("100263") %>% crop_galaxy(0.2) %>% resize_galaxy(c(50, 50)) %>% flatten_galaxy() %>% dim()
 
-read_zoo(2) %>% trim_zoo(0.2) %>% resample_zoo(c(10, 10)) %>% plot()
-read_zoo(121) %>% plot()
-read_zoo(121) %>% trim_zoo(0.26) %>% plot()
+read_galaxy("100263") %>% crop_galaxy(0.2) %>% resize_galaxy(c(10, 10)) %>% plot_pretty()
+read_galaxy(121) %>% plot_pretty
+read_galaxy(121) %>% crop_galaxy(0.26) %>% plot_pretty
 
 
-read_zoo(121) %>% plot()
-read_zoo(121) %>% trim_zoo(0.26) %>% plot()
-read_zoo(121) %>% trim_zoo(0.26) %>% resample_zoo(c(69, 69)) %>% plot()
-read_zoo(121) %>% trim_zoo(0.26) %>% resample_zoo(c(30, 30)) %>% plot()
+read_galaxy(121) %>% plot_pretty()
+read_galaxy(121) %>% crop_galaxy(0.26) %>% plot_pretty()
+read_galaxy(121) %>% crop_galaxy(0.26) %>% resize_galaxy(c(69, 69)) %>% plot_pretty()
+read_galaxy(121) %>% crop_galaxy(0.26) %>% resize_galaxy(c(30, 30)) %>% plot_pretty()
+
+
+read_galaxy(121) %>% dim()
+read_galaxy(121) %>% rotate_galaxy(45) %>% dim()
+read_galaxy(121) %>% rotate_galaxy(45) %>% crop.borders(nx = (599-424)/2, ny = 599-424) %>% dim()
+read_galaxy(121) %>% plot_pretty()
+# read_galaxy(121) %>% rotate_galaxy(45) %>% crop.borders(nx = (599-424)/2, ny = (599-424)/2) %>% plot_pretty()
+read_galaxy(121) %>% plot_pretty()
+read_galaxy(121) %>% rotate_galaxy(15) %>% plot_pretty()
+read_galaxy(121) %>% rotate_galaxy(30) %>% plot_pretty()
+read_galaxy(121) %>% rotate_galaxy(45) %>% plot_pretty()
+
+
+read_galaxy(121) %>% plot_pretty()
+read_galaxy(121) %>% isoblur(2) %>% plot_pretty()
+read_galaxy(121) %>% isoblur(5) %>% plot_pretty()
+read_galaxy(121) %>% isoblur(10) %>% plot_pretty()
+1
 
 
 #  ------------------------------------------------------------------------

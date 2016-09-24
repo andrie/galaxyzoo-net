@@ -21,13 +21,13 @@ create_image_csv <- function(images,
   zzz <- foreach(
       i = images, 
       .combine = c, 
-      .packages = c("jpeg", "magrittr", "fields", "raster"), 
+      .packages = c("jpeg", "magrittr", "imager"), 
       .inorder = TRUE
     ) %do% {
-      z <- read_zoo_image_name(i) %>% 
-        trim_zoo(0.26) %>% 
-        resample_zoo(size) %>%  
-        flatten_zoo()
+      z <- read_galaxy_image_name(i) %>% 
+        crop_galaxy(0.26) %>% 
+        resize_galaxy(size) %>%  
+        flatten_galaxy()
       zz <- data.frame(
         basename(i),
         rbind(as.vector(z)),
