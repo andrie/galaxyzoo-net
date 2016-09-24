@@ -73,7 +73,7 @@ create_image_csv_par <- function(
       (x-1) %/% (length(x)/cores) + 1
     }
     bah <- function(output, cores){
-      output <- gsub("\\.csv", "", output)
+      output <- gsub("\\.csv$", "", output)
       paste0(output, "_", seq_len(cores), ".csv")
     }
     x1 <- split(images, foo(images, cores = cores))
@@ -116,16 +116,16 @@ create_image_csv_par <- function(
 
 create_image_csv_par(nrows = NA, 
                      input = "data/images_training_rev1",
-                     output = "flattened_images_rotated.csv",
+                     output = "images_csv/flattened_images_rotated.csv",
                      size = c(50, 50),
                      rotate_angle = 90,
-                     cores = 6)
+                     cores = parallel::detectCores())
 
 #  ------------------------------------------------------------------------
 
-library(readr)
-gxy <- read_csv("flattened_images_rotated_1.csv")
-layout(t(1:2))
-read_csv("flattened_images_1.csv")[i, -1]         %>% unlist(use.names = FALSE) %>% as.cimg(dims = c(50, 50, 1, 3)) %>% plot_pretty()
-read_csv("flattened_images_rotated_1.csv")[i, -1] %>% unlist(use.names = FALSE) %>% as.cimg(dims = c(50, 50, 1, 3)) %>% plot_pretty()
-layout(1)
+# library(readr)
+# gxy <- read_csv("flattened_images_rotated_1.csv")
+# layout(t(1:2))
+# read_csv("flattened_images_1.csv")[i, -1]         %>% unlist(use.names = FALSE) %>% as.cimg(dims = c(50, 50, 1, 3)) %>% plot_pretty()
+# read_csv("flattened_images_rotated_1.csv")[i, -1] %>% unlist(use.names = FALSE) %>% as.cimg(dims = c(50, 50, 1, 3)) %>% plot_pretty()
+# layout(1)
