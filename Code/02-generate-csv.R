@@ -7,7 +7,7 @@ create_image_csv <- function(images,
                              rotate_angle = 0
                              
 ){
-  source("0-common-functions.R", local = TRUE)
+  source("code/00-common-functions.R", local = TRUE)
   
   library(readr)
   library(foreach)
@@ -106,20 +106,35 @@ create_image_csv_par <- function(
 #                      size = c(50, 50),
 #                      cores = 8)
 
-# create_image_csv_par(nrows = NA, 
-#                      input = "data/images_training_rev1",
-#                      output = "flattened_images.csv",
-#                      size = c(50, 50),
-#                      rotate_angle = 0,
-#                      cores = 8)
+create_image_csv_par(nrows = NA,
+                     input = "data/raw/sdss_cutout",
+                     output = "data/XDF/images_csv/flattened_images.csv",
+                     size = c(50, 50),
+                     rotate_angle = 0,
+                     cores = 8)
 
 
 create_image_csv_par(nrows = NA, 
-                     input = "data/images_training_rev1",
-                     output = "images_csv/flattened_images_rotated.csv",
+                     input = "data/raw/sdss_cutout",
+                     output = "data/XDF/images_csv/flattened_images_rotated_90.csv",
                      size = c(50, 50),
                      rotate_angle = 90,
                      cores = parallel::detectCores())
+
+create_image_csv_par(nrows = NA, 
+                     input = "data/raw/sdss_cutout",
+                     output = "data/XDF/images_csv/flattened_images_rotated_180.csv",
+                     size = c(50, 50),
+                     rotate_angle = 180,
+                     cores = parallel::detectCores())
+
+create_image_csv_par(nrows = NA, 
+                     input = "data/raw/sdss_cutout",
+                     output = "data/XDF/images_csv/flattened_images_rotated_270.csv",
+                     size = c(50, 50),
+                     rotate_angle = 270,
+                     cores = parallel::detectCores())
+
 
 #  ------------------------------------------------------------------------
 

@@ -1,0 +1,1 @@
+dbConnection <- "Server=localhost\\SQL16; Uid=andrie; Pwd=voyager70$"
