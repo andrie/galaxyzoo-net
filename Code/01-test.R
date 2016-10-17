@@ -1,4 +1,4 @@
-source("0-common-functions.R")
+source("code/00-common-functions.R", local = TRUE)
 
 #  ------------------------------------------------------------------------
 

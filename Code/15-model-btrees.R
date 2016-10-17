@@ -1,6 +1,6 @@
 # Compute context ---------------------------------------------------------
 
-source("00-settings.R") # defines dbConnection
+source("code/00-settings.R") # defines dbConnection
 
 sql_share_directory <- file.path("c:", "AllShare", Sys.getenv("USERNAME"))
 #dir.create(sql_share_directory, recursive = TRUE)

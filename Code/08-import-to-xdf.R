@@ -3,8 +3,9 @@ library(readr)
 
 
 
-galaxy_class <- "data/galaxy_class.csv"
-class <- read_csv(galaxy_class, n_max = Inf)
+galaxy_class <- "data/xdf/galaxy_class.csv"
+class <- read_csv(galaxy_class, n_max = Inf, col_types = cols(specobjid = "c"))
+head(class)
 
 import_xdf <- function(input_files, output_xdf){
   for(ff in input_files){
@@ -16,7 +17,7 @@ import_xdf <- function(input_files, output_xdf){
                     )
     )
     
-    idx <- match(dat$Image, paste0(class$GalaxyID, ".jpg"))
+    idx <- match(dat$Image, paste0(class$specobjid, ".jpg"))
     dat$Class <- class$Class[idx]
     
     first <- ff == input_files[1]
@@ -29,16 +30,17 @@ import_xdf <- function(input_files, output_xdf){
   }
 }
 
-xdf_train <- RxXdfData("images_train.xdf")
-xdf_test  <- RxXdfData("images_test.xdf")
+xdf_train <- RxXdfData("data/xdf/images_train.xdf")
+xdf_test  <- RxXdfData("data/xdf/images_test.xdf")
 
-input_train <- list.files(path = "images_csv", 
-                          pattern = "flattened_images_.*[1-7].csv", 
+input_train <- list.files(path = "data/xdf/images_csv", 
+                          pattern = "flattened_images_(rotated_90_)*[1-3].csv", 
                           full.names = TRUE
 )
+input_train
 
-input_test <- list.files(path = "images_csv", 
-                          pattern = "flattened_images_.*[8].csv", 
+input_test <- list.files(path = "data/xdf/images_csv", 
+                          pattern = "flattened_images_[8].csv", 
                           full.names = TRUE
 )
 
