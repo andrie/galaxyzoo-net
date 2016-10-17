@@ -22,7 +22,7 @@ dbConnection <- 'Driver={SQL Server};Server=adv-win-dsvm.westeurope.cloudapp.azu
 
 library(RODBC)
 conn <- odbcDriverConnect(dbConnection)
-dat <- sqlQuery(conn, qry, as.is=TRUE)
+dat <- sqlQuery(conn, qry, as.is = TRUE)
 head(dat)
 str(dat)
 
@@ -54,7 +54,8 @@ make_image_url(dat) %>% tail()
 
 make_image_url(dat) %>% head()
 
-for(i in seq_len(nrow(dat))){
+# for(i in seq_len(nrow(dat))){
+for(i in 1:10){
   message(i)
   try(
     download.file(
@@ -62,7 +63,7 @@ for(i in seq_len(nrow(dat))){
       mode = "wb",
       quiet = TRUE,
       destfile = file.path(
-        "sdss_cutout",
+        "data/raw/sdss_cutout",
         paste0(dat$specobjid[i], ".jpg")
       )
     )

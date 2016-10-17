@@ -2,7 +2,7 @@
 library(MicrosoftRML)
 library("RMLtools")
 
-if(!exists("galaxy_data")) galaxy_data <- rxReadXdf("images_train.xdf")
+# if(!exists("galaxy_data")) galaxy_data <- rxReadXdf("images_train.xdf")
 
 frm <- local({
   Vs <- sum(grepl("V\\d", names(galaxy_data)))
