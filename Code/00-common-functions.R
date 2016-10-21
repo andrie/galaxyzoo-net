@@ -1,7 +1,7 @@
 library(magrittr)
 library(imager)
 
-galaxy_images <- function(id, image_dir = "data/images_training_rev1"){
+galaxy_images <- function(id, image_dir = "data/raw/sdss_cutout"){
   if(is.numeric(id)){
     imgs <- list.files(pattern = ".jpg", path = image_dir, full.names = TRUE)
     imgs[id]
@@ -27,12 +27,34 @@ read_galaxy_image_name <- function(file){
 }
 
 
+plot.cimg <- function (x, frame, rescale.color = FALSE, xlab = NA, ylab = NA, interpolate = FALSE, ...) 
+{
+  im <- x
+  if (dim(im)[3] == 1) {
+    w <- width(im)
+    h <- height(im)
+    if (rescale.color & (diff(range(im)) > 0)) 
+      im <- (im - min(im))/diff(range(im))
+    plot(c(1, w), c(1, h), type = "n", xlab = xlab, ylab = ylab, 
+         ..., ylim = c(h, 1))
+    as.raster(im, rescale.color = rescale.color) %>% rasterImage(1, height(im), width(im), 1, interpolate = interpolate)
+  }
+  else {
+    if (missing(frame)) {
+      warning("Showing first frame")
+      frame <- 1
+    }
+    plot.cimg(frame(im, frame), rescale.color = rescale.color, 
+              ...)
+  }
+}
+
 plot_pretty <- function(x, interpolate = FALSE, ...){
   zeroes <- rep(0, 4)
   oldpar <- par(mar = zeroes, mai = zeroes)
   on.exit(par(oldpar))
   # plot(0:1, 0:1, type = "n", xaxt = "n", yaxt = "n", bty = "n")
-  plot(x, interpolate = interpolate, xaxt = "n", yaxt = "n", bty = "n", xlab = "", ylab = "", asp = 1)
+  plot(x, interpolate = interpolate, xaxt = "n", yaxt = "n", bty = "n", xlab = NA, ylab = NA, asp = 1, ...)
 }
 
 crop_galaxy <- function(x, fraction = 0.1){

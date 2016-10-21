@@ -8,7 +8,7 @@ read_galaxy(1) %>% plot_pretty()
 read_galaxy(121) %>% plot_pretty()
 read_galaxy("100263") %>% plot_pretty()
 
-read_galaxy_image_name("data/images_training_rev1/100263.jpg") %>% plot_pretty()
+read_galaxy_image_name("data/raw/sdss_cutout/100263.jpg") %>% plot_pretty()
 
 read_galaxy("100263") %>% resize_galaxy(c(20, 20)) %>% dim()
 read_galaxy("100263") %>% resize_galaxy(c(20, 20)) %>% plot_pretty
