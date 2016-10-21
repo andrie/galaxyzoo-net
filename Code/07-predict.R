@@ -1,51 +1,35 @@
 library(MicrosoftRML)
 library(readr)
 
-flat_images  <- "flattened_images_trial_2.csv"
-galaxy_class <- "data/galaxy_class.csv"
-class <- read_csv(galaxy_class, n_max = n_max)
+source("code/00-common-functions.R")
 
-n_max <- Inf
+galaxy_train <- RxXdfData("data/xdf/images_train.xdf")
+galaxy_test  <- RxXdfData("data/xdf/images_test.xdf")
 
-if(!exists("new_data")){
-  new_data <- local({
-    dat <- read_csv(flat_images, 
-                    skip = 0,
-                    n_max = n_max,
-                    # col_names = c("Class", paste0("V", seq_len(ncol - 1))),
-                    col_types = cols(
-                      .default = col_double(),
-                      Image = col_character()
-                    ))
-    
-    nrow <- nrow(dat)
-    
-    class <- read_csv(galaxy_class, n_max = n_max)
-    idx <- match(dat$Image, paste0(class$GalaxyID, ".jpg"))
-    dat$Class <- class$Class[idx]
-    dat
-  })
-  
-  View(new_data)
-}
+model <- read_last_model("data/modeling/models")
 
-model <- readRDS("scored_model_2016-09-12.rds")
+summary_train <- mxPredict(model, galaxy_train, extraVarsToWrite = "Class")
+summary_test  <- mxPredict(model, galaxy_test, extraVarsToWrite = "Class")
 
-pred <- mxPredict(model, new_data)
-# rxSummary(~Class, galaxy_data)
+conf_train <- xtabs(~ Class + PredictedLabel, summary_train)
+conf_test  <- xtabs(~ Class + PredictedLabel, summary_test)
 
-# table(galaxy_data$Class)
-table(new_data$Class)
-table(pred$PredictedLabel)
+conf_train
+conf_test
 
-table(new_data$Class, pred$PredictedLabel)
-xtabs(~ new_data$Class + pred$PredictedLabel)
 
 library(ggplot2)
 library(magrittr)
-as.data.frame(
-  xtabs(~ new_data$Class + pred$PredictedLabel)
-) %>% 
-  ggplot(aes(x = new_data.Class, y = pred.PredictedLabel)) + 
-  geom_point(aes(size = Freq, colour = Freq))
+dat <- as.data.frame(
+  conf_test
+)
+dat <- within(dat, {
+  PredictedLabel <- factor(PredictedLabel, levels = rev(levels(PredictedLabel)))
+})
+
+dat %>% 
+  ggplot(aes(x = Class, y = PredictedLabel)) + 
+  # geom_point(aes(size = Freq, colour = Freq))
+  geom_tile(aes(fill = Freq)) +
+  scale_fill_continuous(low = "white", high = "blue")
 

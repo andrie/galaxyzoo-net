@@ -1,7 +1,22 @@
 library(magrittr)
 library(imager)
 
-galaxy_images <- function(id, image_dir = "data/raw/sdss_cutout"){
+read_last_model <- function(path = "data/modeling/models", pattern = "scored_model.*.rds"){
+  stopifnot(require(dplyr))
+  fn <- list.files(path = path, pattern = pattern, full.names = TRUE)
+  prevModelName <- fn %>% 
+    file.info() %>% 
+    mutate(filename = fn) %>% 
+    filter(mtime == max(mtime)) %>% 
+    .[["filename"]]
+  x <- readRDS(prevModelName)
+  x$params$DataFrameEnvironment <- new.env()
+  x$params$env <- new.env()
+  x
+}
+
+
+galaxy_images <- function(id, image_dir = "data/images_training_rev1"){
   if(is.numeric(id)){
     imgs <- list.files(pattern = ".jpg", path = image_dir, full.names = TRUE)
     imgs[id]

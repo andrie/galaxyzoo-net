@@ -1,39 +1,43 @@
 # devtools::install_github("andrie/RMLtools")
 library(MicrosoftRML)
 library("RMLtools")
+source("data/00-common-functions.R")
 
-prevModelName <- tail(list.files(path = "models", pattern = "scored_model.*.rds", full.names = TRUE), 1)
-prevModel <- readRDS(prevModelName)
+prevModel <- read_last_model("data/modeling/models")
 
 tf <- "reconstructed_net.nn"
 z <- reconstructNetDefinition(prevModel, filename = tf)
 
 frm <- prevModel$Formula
 
-if(!exists("galaxydata")) galaxy_data <- rxReadXdf("images_train.xdf")
+galaxy_train <- RxXdfData("data/xdf/images_train.xdf")
+galaxy_test  <- RxXdfData("data/xdf/images_test.xdf")
 
 
-rxSetComputeContext(RxLocalParallel())
-rxOptions(numCoresToUse = parallel::detectCores())
 system.time({
-  model <- mxNeuralNet(frm, galaxy_data,
+  model <- mxNeuralNet(frm, galaxy_train,
                        netDefinition = readNetDefinition(tf), 
                        type = "multiClass", 
-                       optimizer = maOptimizerAda(decay = 0.99),
-                       # acceleration = "sse",
+                       optimizer = maOptimizerSgd(
+                         learningRate = 0.05*(0.95)^(50/5),
+                         lRateRedRatio = 0.95,
+                         lRateRedFreq = 5,
+                         momentum = 0.25
+                       ),
                        acceleration = "gpu",
-                       miniBatchSize = 32,
+                       miniBatchSize = 100,
                        numIterations = 100,
-                       normalize = "auto",
+                       normalize = "no",
                        initWtsDiameter = 0.1
   )
 })
 
-mxSaveModel(model, sprintf("models/scored_model_%s.rds", strftime(Sys.time(), format = "%F-%Hh%M")))
+mxSaveModel(model, sprintf("data/modeling/models/scored_model_%s.rds", strftime(Sys.time(), format = "%F-%Hh%M")))
 
-summary_train <- mxPredict(model, galaxy_data, extraVarsToWrite = "Class")
+summary_train <- mxPredict(model, galaxy_train, extraVarsToWrite = "Class")
 xtabs(~ Class + PredictedLabel, summary_train)
 
-if(!exists("galaxy_test")) galaxy_test <- rxReadXdf("images_test.xdf")
 summary_test <- mxPredict(model, galaxy_test, extraVarsToWrite = "Class")
 xtabs(~ Class + PredictedLabel, summary_test)
+
+
